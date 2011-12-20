@@ -1,126 +1,13 @@
-TweetStation
+UICalendar Control
+	The UICalendar control was designed because Apple does not include the Calendar controls with the SDK. The month and day view were closely modeled after the Native iOS calendar.  The week view was written before iOS included a week view. It has some extra goodies like pinch to zoom.
 
-	TweetStation was originally a sample program that I created
-	for my own use.  I was a fan of the older UI in Echofon and
-	liked many of the elements of Tweetie2, but like every
-	programmer, I wanted to make some changes.
+Images
+Day view
+http://www.screencast.com/t/HShmUUdux
+Month view
+http://www.screencast.com/t/l97gWTq9ej
+Week view
+http://www.screencast.com/t/eMDXnaIRjp
 
-	It was also a test bed for testing APIs and answering
-	MonoTouch users's questions.  It is the original application
-	that lead to the creation of MonoTouch.Dialog, as I figured
-	that there should be a better way of constructing dialog boxes
-	than creating models and delegates left and right.
-
-	TweetStation is an open source, MIT X11 licensed twitter
-	client written for MonoTouch.   See the file LICENSE for
-	details.
-
-	I setup a web site at: http://tirania.org/tweetstation as
-	the oficial user-centric web site for TweetStation.
-
-	The official description for the app is on TweetStation.txt
-
-Building
-========
-
-	To build TweetStation, you will need a side-by-side
-	MonoTouch.Dialog release, since they are co-developed,
-	you will likely need the latest version.
-
-Design Goals
-============
-
-   These design goals are just some basic principles, but like any
-   other project, they change depending on my mood each day or when
-   faced with harsh realities.
-
-   The Murray Hill Style
-
-	For years researchers from Bell Labs at Murray Hill published
-	various computer books on C, Unix, compilers and design that
-	were incredibly succinct.   They were amazing pieces of code
-	that were short and concise.  I call this style of code the
-	Murray Hill style.
-
-	The TweetStation code was not designed to be incredibly
-	extensible or reusable as-is.   I wrote this code to be succinct
-	and short, if it is reusable for other projects it is an 
-	unintended side effect.
-
-	If you want to reuse code from TweetStation, you will likely
-	want to alter it to suit your needs.
-
-   Exceptions
-
-	The code uses try/catch extensively in the code in areas that
-	have to process data from twitter, I assume that the data
-	might be broken or that my original assumptions or their
-	documentation might be wrong.  You will notice in the code
-	that all exceptions are printed out, I want to keep that this
-	way for that reason.
-
-   MonoTouch.Dialog
-
-	Most of the UI was created with MonoTouch.Dialog and various
-	custom views and Elements designed for twitter.  There is not
-	a single UITableView coded in the traditional style.
-
-   Memory Usage
-
-	In some parts of the code I tried to minimize memory usage by
-	not creating thousands of objects that would be thrown out
-	(Tweet parsing for example), so I just recycle some instances
-	sometimes.
-
-	The ImageStore is also specialized for Twitter use, for instance
-	the keys kept in the cache and on the file system are keyed by
-	a long value and not by the URL, so we are not forced to keep
-	the strings for the Urls in memory.
-
-	A general purpose image downloader/cache would use URLs or
-	something else.
-
-   Singletons
-
-	There are a handful of singleton classes as well, I tend to
-	reset those instead of creating new instances as they would
-	avoid creating expensive objects or objects that are known to
-	leak in CocoaTouch anyways.
-
-   Pending Task Queue
-
-	I never know if a tweet has been starred or not when there is
-	no network connectivity.   With TweetStation all the pending
-	requests are kept in a queue and flushed at periodic intervals.
-
-	This is used both to post tweets and favorite posts, allowing
-	the settings to take place right away, even if there is no
-	network connectivity
-
-Implementation Notes
-====================
-
-	In the original TweetStation, I ended up doing a of database
-	operations on the main thread, as opposed to doing it on a
-	background thread.
-
-	I am moving towards locking the Database.Main to allow the
-	parsing of initial tweets to take place in the background
-
-OAuth and xAuth
-===============
-
-	TweetStation supports both OAuth and xAuth authentication from
-	twitter.   Currently the source code is hardcoded to the values
-	that I obtained by registering my app at:
-
-		http://dev.twitter.com/apps
-
-	It uses OAuth by default and it does this by opening an embedded
-	UIWebView to let the user enter their login and password and 
-	granting the user authorization over at Twitter's site.
-
-	To improve the experience, Twitter offers access to xAuth, but
-	this requires application developers to request from Twitter
-	special access, you can enable this for your code if you
-	negotiate this.
+Video of the week view
+http://www.screencast.com/t/N2I5MjFh
