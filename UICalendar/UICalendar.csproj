@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{82FBA9E5-54C8-46BC-B9AF-2BE87AD8A5E6}</ProjectGuid>
+    <ProjectTypeGuids>{6BC8ED88-2882-458C-8E55-DFD12B67127B};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>UICalendar</RootNamespace>
+    <AssemblyName>UICalendar</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="monotouch" />
+    <Reference Include="MonoTouch.Dialog-1" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Images\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Images\Calendar\datecell.png" />
+    <Content Include="Images\Calendar\datecellselected.png" />
+    <Content Include="Images\Calendar\leftarrow.png" />
+    <Content Include="Images\Calendar\rightarrow.png" />
+    <Content Include="Images\Calendar\shadow.png" />
+    <Content Include="Images\Calendar\today.png" />
+    <Content Include="Images\Calendar\todayselected.png" />
+    <Content Include="Images\Calendar\topbar.png" />
+    <Content Include="Images\shadow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CalendarViews.cs" />
+    <Compile Include="RotatingViewController.cs" />
+    <Compile Include="ScrollViewWithHeader.cs" />
+    <Compile Include="CalendarMonthView.cs" />
+    <Compile Include="Util.cs" />
+    <Compile Include="Graphics.cs" />
+    <Compile Include="Images.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="HorizontalDividerView.cs" />
+    <Compile Include="CustomElements.cs" />
+    <Compile Include="Extensions.cs" />
+  </ItemGroup>
+</Project>

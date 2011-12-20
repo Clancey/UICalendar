@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UICalendar", "UICalendar\UICalendar.csproj", "{82FBA9E5-54C8-46BC-B9AF-2BE87AD8A5E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "Sample\Sample.csproj", "{D0F4419D-D6DC-4E5A-9449-06CFFDA48C24}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+		Debug|iPhoneSimulator = Debug|iPhoneSimulator
+		Release|iPhoneSimulator = Release|iPhoneSimulator
+		Debug|iPhone = Debug|iPhone
+		Release|iPhone = Release|iPhone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{82FBA9E5-54C8-46BC-B9AF-2BE87AD8A5E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82FBA9E5-54C8-46BC-B9AF-2BE87AD8A5E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82FBA9E5-54C8-46BC-B9AF-2BE87AD8A5E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82FBA9E5-54C8-46BC-B9AF-2BE87AD8A5E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0F4419D-D6DC-4E5A-9449-06CFFDA48C24}.Debug|Any CPU.ActiveCfg = Debug|iPhoneSimulator
+		{D0F4419D-D6DC-4E5A-9449-06CFFDA48C24}.Debug|Any CPU.Build.0 = Debug|iPhoneSimulator
+		{D0F4419D-D6DC-4E5A-9449-06CFFDA48C24}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{D0F4419D-D6DC-4E5A-9449-06CFFDA48C24}.Debug|iPhone.Build.0 = Debug|iPhone
+		{D0F4419D-D6DC-4E5A-9449-06CFFDA48C24}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{D0F4419D-D6DC-4E5A-9449-06CFFDA48C24}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{D0F4419D-D6DC-4E5A-9449-06CFFDA48C24}.Release|Any CPU.ActiveCfg = Release|iPhoneSimulator
+		{D0F4419D-D6DC-4E5A-9449-06CFFDA48C24}.Release|Any CPU.Build.0 = Release|iPhoneSimulator
+		{D0F4419D-D6DC-4E5A-9449-06CFFDA48C24}.Release|iPhone.ActiveCfg = Release|iPhone
+		{D0F4419D-D6DC-4E5A-9449-06CFFDA48C24}.Release|iPhone.Build.0 = Release|iPhone
+		{D0F4419D-D6DC-4E5A-9449-06CFFDA48C24}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{D0F4419D-D6DC-4E5A-9449-06CFFDA48C24}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Sample\Sample.csproj
+	EndGlobalSection
+EndGlobal
