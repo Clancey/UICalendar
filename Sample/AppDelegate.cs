@@ -28,8 +28,7 @@ namespace Sample
 		{
 			window = new UIWindow (UIScreen.MainScreen.Bounds);
 			
-			viewController = new UINavigationController(new  RotatingCalendarView(window.Frame,0));
-			//viewController.View.Add(calendar.View);
+			viewController = new UINavigationController(new  RotatingCalendarView(window.Frame));
 			window.RootViewController = viewController;
 			window.MakeKeyAndVisible ();
 			

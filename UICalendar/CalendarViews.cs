@@ -137,7 +137,12 @@ namespace UICalendar
 		private UIToolbar bottomBar;
 		public EKEventEditViewController addController;
 		bool hasLoaded;
-
+		
+		public RotatingCalendarView (RectangleF rect) : this(rect,0)
+		{
+			
+		}
+		
 		public RotatingCalendarView (RectangleF rect, float tabBarHeight)
 		{
 			
@@ -236,6 +241,7 @@ namespace UICalendar
 						case EKEventEditViewAction.Deleted :
 						case EKEventEditViewAction.Saved:
 						this.NavigationController.DismissModalViewControllerAnimated(true);
+						
 						break;
 					}
 				};
