@@ -169,6 +169,7 @@ namespace UICalendar
 			LandscapeLeftView = WeekView;
 			LandscapeRightView = WeekView;
 			PortraitView = SingleDayView;
+			SingleDayView.ForceAutoRotate = delegate{ForceAutoRotate();};
 			SingleDayView.OnEventClicked += theEvent =>
 			{
 				if (theEvent != null) {
@@ -207,6 +208,14 @@ namespace UICalendar
 				}
 			};
 		}
+		
+		public override bool ShouldAutorotateToInterfaceOrientation (UIInterfaceOrientation toInterfaceOrientation)
+		{
+			if(forceRotate)
+				return (toInterfaceOrientation == UIInterfaceOrientation.LandscapeLeft || 
+				toInterfaceOrientation == UIInterfaceOrientation.LandscapeRight);
+			return base.ShouldAutorotateToInterfaceOrientation (toInterfaceOrientation);
+		}
 
 		public override void ViewWillAppear (bool animated)
 		{
@@ -233,6 +242,17 @@ namespace UICalendar
 			NavigationItem.Title = WeekView.FirstDayOfWeek.ToString("MMM dd yyyy") + " - " + WeekView.FirstDayOfWeek.AddDays (6).ToString("MMM dd yyyy");
 			_rightButton = new UIBarButtonItem (Graphics.AdjustImage(Images.rightArrow,CGBlendMode.SourceAtop,UIColor.White), UIBarButtonItemStyle.Bordered, HandleNextWeekTouch);
 			NavigationItem.RightBarButtonItem = _rightButton;
+		}
+		bool forceRotate;
+		public void ForceAutoRotate()
+		{
+			//This is a HUUUUUUUGE hack please use knowing that Apple could break this for you.
+			//Essentially it just calls ShouldAutorotate after DismissModalViewControllerAnimated is completed sync.
+			forceRotate = true;
+			var vc = new UIViewController();
+			this.NavigationController.PresentModalViewController(vc, false);
+			this.NavigationController.DismissModalViewControllerAnimated(false);
+			forceRotate = false;
 		}
 
 		private void portriatNavBar ()
@@ -525,7 +545,7 @@ namespace UICalendar
 
 		private float curScrollH;
 		private float curScrollW;
-
+		public Action ForceAutoRotate;
 		public bool UseCalendar { get; set; }
 		public bool EventsNeedRefresh { get; set; }
 		public bool isVisible { get; set; }
@@ -653,9 +673,12 @@ namespace UICalendar
 				AddSubview (monthView);
 				break;
 			case 2:
-				var frame = weekView.Bounds;
-				weekView.AddSubview (new UILabel (frame) { Lines = 2, Text = "Please rotate for the week view\r\n (replace with graphic)", TextAlignment = UITextAlignment.Center });
-				AddSubview (weekView);
+				if(ForceAutoRotate != null)
+					ForceAutoRotate();
+				Settings.lastCal = 0;
+				//var frame = weekView.Bounds;
+				//weekView.AddSubview (new UILabel (frame) { Lines = 2, Text = "Please rotate for the week view\r\n (replace with graphic)", TextAlignment = UITextAlignment.Center });
+				//AddSubview (weekView);
 				break;
 			}
 			AddSubview (bottomBar);
