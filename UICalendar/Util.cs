@@ -59,6 +59,18 @@ namespace UICalendar
 			// Create the predicate. Pass it the default calendar.
 			//Util.WriteLine ("Getting Calendars");
 			EKEventStore store = new EKEventStore ();
+			store.RequestAccess (EKEntityType.Event, (bool granted, NSError e) => {
+				if (granted)
+				{
+#if DEBUG
+					Console.WriteLine("Access Granted!");
+#endif
+					//Do add events calendars and any calendar stuff here
+				}
+				else
+					new UIAlertView ( "Access Denied", "User Denied Access to Calendar Data", null, "ok", null).Show ();
+			} 
+			);
 			var calendarArray = store.Calendars;
 			//Util.WriteLine ("Predicate");
 			//Convert to NSDate
