@@ -13,31 +13,31 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 using System;
-using MonoTouch.UIKit;
-using System.Drawing;
-using MonoTouch.CoreGraphics;
-using MonoTouch.CoreAnimation;
+using UIKit;
+using CoreGraphics;
+using CoreGraphics;
+using CoreAnimation;
 namespace UICalendar
 {
 	public class HorizontalDividerView : UIView
 	{
-		public HorizontalDividerView (RectangleF rect) : base (rect)
+		public HorizontalDividerView (CGRect rect) : base (rect)
 		{	
 			var backgroundLayer = new CAGradientLayer();
 			backgroundLayer.Frame = this.Bounds;
-			backgroundLayer.Colors = new MonoTouch.CoreGraphics.CGColor[] { UIColor.White.CGColor,UIColor.LightGray.CGColor };
+			backgroundLayer.Colors = new CoreGraphics.CGColor[] { UIColor.White.CGColor,UIColor.LightGray.CGColor };
 			Layer.AddSublayer(backgroundLayer);
 
 		}
-		public override void Draw (RectangleF rect)
+		public override void Draw (CGRect rect)
 		{
 			base.Draw (rect);
 			
 			CGContext context = UIGraphics.GetCurrentContext ();
 			context.SaveState ();
-			context.SetFillColorWithColor(UIColor.Black.CGColor);
+			context.SetFillColor(UIColor.Black.CGColor);
 			context.SetLineWidth(1);
-			context.SetFillColorWithColor(UIColor.Clear.CGColor);
+			context.SetFillColor(UIColor.Clear.CGColor);
 			context.AddRect(this.Frame.Subtract(1,1,1,1));
 			context.RestoreState();			
 		}

@@ -13,16 +13,16 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 using System;
-using System.Drawing;
+using CoreGraphics;
 using System.Collections.Generic;
-using MonoTouch.UIKit;
-using MonoTouch.Foundation;
-using MonoTouch.CoreGraphics;
+using UIKit;
+using Foundation;
+using CoreGraphics;
 using MonoTouch.Dialog;
-using MonoTouch.EventKit;
-using MonoTouch.EventKitUI;
+using EventKit;
+using EventKitUI;
 using System.Linq;
-using MonoTouch.ObjCRuntime;
+using ObjCRuntime;
 using MonoTouch.Dialog.Utilities;
 
 namespace UICalendar
@@ -98,7 +98,7 @@ namespace UICalendar
 				ContentView.Add (lblSub);
 			}
 
-			public override void Draw (RectangleF rect)
+			public override void Draw (CGRect rect)
 			{
 				base.Draw (rect);
 			}
@@ -195,7 +195,7 @@ namespace UICalendar
 		{
 			const float diameter = 15;
 			public UIColor Color { get; set; }
-			public override void Draw (RectangleF rect)
+			public override void Draw (CGRect rect)
 			{
 				var context = UIGraphics.GetCurrentContext ();
 				
@@ -210,9 +210,9 @@ namespace UICalendar
 				//context.FillEllipseInRect(frame);
 				
 				frame.Y -= 3;
-				context.SetFillColorWithColor (UIColor.White.CGColor);
+				context.SetFillColor (UIColor.White.CGColor);
 				context.FillRect (rect);
-				context.SetFillColorWithColor (Color.CGColor);
+				context.SetFillColor (Color.CGColor);
 				context.FillEllipseInRect (frame);
 				
 				context.RestoreState ();
@@ -224,10 +224,10 @@ namespace UICalendar
 				// the colors
 				var topColor = UIColor.White.ColorWithAlpha (0.5f).CGColor;
 				var bottomColor = UIColor.White.ColorWithAlpha (0.10f).CGColor;
-				List<float> colors = new List<float> ();
+				List<nfloat> colors = new List<nfloat> ();
 				colors.AddRange (topColor.Components);
 				colors.AddRange (bottomColor.Components);
-				float[] locations = new float[] { 0, 1 };
+				nfloat[] locations = new nfloat[] { 0, 1 };
 				
 				CGGradient gradient = new CGGradient (topColor.ColorSpace, colors.ToArray (), locations);
 				
@@ -236,8 +236,8 @@ namespace UICalendar
 				context.AddEllipseInRect (shineFrame);
 				context.Clip ();
 				
-				var startPoint = new PointF (shineFrame.GetMidX (), shineFrame.GetMidY ());
-				var endPoint = new PointF (shineFrame.GetMidX (), shineFrame.GetMaxY ());
+				var startPoint = new CGPoint (shineFrame.GetMidX (), shineFrame.GetMidY ());
+				var endPoint = new CGPoint (shineFrame.GetMidX (), shineFrame.GetMaxY ());
 				
 				context.DrawLinearGradient (gradient, startPoint, endPoint, CGGradientDrawingOptions.DrawsBeforeStartLocation);
 				gradient.Dispose ();

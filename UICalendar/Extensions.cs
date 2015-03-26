@@ -13,199 +13,202 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 using System;
-using System.Drawing;
+using CoreGraphics;
+using Foundation;
+
+
 namespace UICalendar
 {
 	public static class Extensions
 	{
 		#region Points
-		public static PointF Subtract (this PointF orgPoint, PointF point)
+		public static CGPoint Subtract (this CGPoint orgPoint, CGPoint point)
 		{
 			var x = orgPoint.X - point.X;
 			var y = orgPoint.Y - point.Y;
-			return new PointF (x, y);
+			return new CGPoint (x, y);
 		}
-		public static PointF Add (this PointF orgPoint, PointF point)
+		public static CGPoint Add (this CGPoint orgPoint, CGPoint point)
 		{
 			var x = orgPoint.X + point.X;
 			var y = orgPoint.Y + point.Y;
-			return new PointF (x, y);
+			return new CGPoint (x, y);
 		}
 
-		public static PointF Add (this PointF orgPoint, Size size)
+		public static CGPoint Add (this CGPoint orgPoint, CGSize size)
 		{
 			var x = orgPoint.X + size.Width;
 			var y = orgPoint.Y + size.Height;
-			return new PointF (x, y);
+			return new CGPoint (x, y);
 		}
 
-		public static PointF Add (this PointF orgPoint, SizeF size)
-		{
-			var x = orgPoint.X + size.Width;
-			var y = orgPoint.Y + size.Height;
-			return new PointF (x, y);
-		}
-
-		public static Point Add (this Point orgPoint, Point point)
-		{
-			var x = orgPoint.X + point.X;
-			var y = orgPoint.Y + point.Y;
-			return new Point (x, y);
-		}
-		public static Point Subtract (this Point orgPoint, Point point)
-		{
-			var x = orgPoint.X - point.X;
-			var y = orgPoint.Y - point.Y;
-			return new Point (x, y);
-		}
-
-		public static Point Subtract (this Point orgPoint, PointF point)
-		{
-			var pointF = Point.Round (point);
-			var x = orgPoint.X - pointF.X;
-			var y = orgPoint.Y - pointF.Y;
-			return new Point (x, y);
-		}
+//		public static CGPoint Add (this CGPoint orgPoint, CGSize size)
+//		{
+//			var x = orgPoint.X + size.Width;
+//			var y = orgPoint.Y + size.Height;
+//			return new CGPoint (x, y);
+//		}
+//
+//		public static CGPoint Add (this CGPoint orgPoint, CGPoint point)
+//		{
+//			var x = orgPoint.X + point.X;
+//			var y = orgPoint.Y + point.Y;
+//			return new CGPoint (x, y);
+//		}
+//		public static CGPoint Subtract (this CGPoint orgPoint, CGPoint point)
+//		{
+//			var x = orgPoint.X - point.X;
+//			var y = orgPoint.Y - point.Y;
+//			return new CGPoint (x, y);
+//		}
+//
+//		public static CGPoint Subtract (this CGPoint orgPoint, CGPoint point)
+//		{
+//			var pointF = CGPoint.Round (point);
+//			var x = orgPoint.X - pointF.X;
+//			var y = orgPoint.Y - pointF.Y;
+//			return new CGPoint (x, y);
+//		}
 		#endregion
 
 		#region Sizes
-		public static SizeF Subtract (this SizeF orgSize, PointF point)
+		public static CGSize Subtract (this CGSize orgSize, CGPoint point)
 		{
 			var x = orgSize.Width - point.X;
 			var y = orgSize.Height - point.Y;
-			return new SizeF (x, y);
+			return new CGSize (x, y);
 		}
-		public static SizeF Add (this SizeF orgSize, PointF point)
+		public static CGSize Add (this CGSize orgSize, CGPoint point)
 		{
 			var x = orgSize.Width + point.X;
 			var y = orgSize.Height + point.Y;
-			return new SizeF (x, y);
+			return new CGSize (x, y);
 		}
 
-		public static SizeF Add (this SizeF orgSize, Size size)
+		public static CGSize Add (this CGSize orgSize, CGSize size)
 		{
 			var x = orgSize.Width + size.Width;
 			var y = orgSize.Height + size.Height;
-			return new SizeF (x, y);
+			return new CGSize (x, y);
 		}
 
-		public static SizeF Add (this SizeF orgSize, SizeF size)
-		{
-			var x = orgSize.Width + size.Width;
-			var y = orgSize.Height + size.Height;
-			return new SizeF (x, y);
-		}
-
-		public static Size Add (this Size orgSize, Point point)
-		{
-			var x = orgSize.Width + point.X;
-			var y = orgSize.Height + point.Y;
-			return new Size (x, y);
-		}
-		public static Size Subtract (this Size orgSize, Point point)
-		{
-			var x = orgSize.Width - point.X;
-			var y = orgSize.Height - point.Y;
-			return new Size (x, y);
-		}
-
-		public static SizeF Subtract (this SizeF orgSize, SizeF size)
-		{
-			var x = orgSize.Width - size.Width;
-			var y = orgSize.Height - size.Height;
-			return new SizeF (x, y);
-		}
-
-		public static Size Subtract (this Size orgSize, SizeF size)
-		{
-			var sizeF = Size.Round (size);
-			var x = orgSize.Width - sizeF.Width;
-			var y = orgSize.Height - sizeF.Height;
-			return new Size (x, y);
-		}
+//		public static CGSize Add (this CGSize orgSize, CGSize size)
+//		{
+//			var x = orgSize.Width + size.Width;
+//			var y = orgSize.Height + size.Height;
+//			return new CGSize (x, y);
+//		}
+//
+//		public static CGSize Add (this CGSize orgSize, CGPoint point)
+//		{
+//			var x = orgSize.Width + point.X;
+//			var y = orgSize.Height + point.Y;
+//			return new CGSize (x, y);
+//		}
+//		public static CGSize Subtract (this CGSize orgSize, CGPoint point)
+//		{
+//			var x = orgSize.Width - point.X;
+//			var y = orgSize.Height - point.Y;
+//			return new CGSize (x, y);
+//		}
+//
+//		public static CGSize Subtract (this CGSize orgSize, CGSize size)
+//		{
+//			var x = orgSize.Width - size.Width;
+//			var y = orgSize.Height - size.Height;
+//			return new CGSize (x, y);
+//		}
+//
+//		public static CGSize Subtract (this CGSize orgSize, CGSize size)
+//		{
+//			var sizeF = CGSize.Round (size);
+//			var x = orgSize.Width - sizeF.Width;
+//			var y = orgSize.Height - sizeF.Height;
+//			return new CGSize (x, y);
+//		}
 		#endregion
 
 		#region Rectangles
-		public static float AbsoluteWidth(this RectangleF orgRect)
+		public static nfloat AbsoluteWidth(this CGRect orgRect)
 		{
 			return orgRect.X + orgRect.Width;	
 		}
-		public static float AbsoluteHeight(this RectangleF orgRect)
+		public static nfloat AbsoluteHeight(this CGRect orgRect)
 		{
 			return orgRect.Y + orgRect.Height;	
 		}
 		
-		public static RectangleF SetLocation (this RectangleF orgRect, PointF point)
+		public static CGRect SetLocation (this CGRect orgRect, CGPoint point)
 		{
 			orgRect.Location = point;
 			return orgRect;
 		}
 		
-		public static RectangleF SetLocation (this RectangleF orgRect, float x,float y)
+		public static CGRect SetLocation (this CGRect orgRect, float x,float y)
 		{
-			orgRect.Location = new PointF(x,y);
+			orgRect.Location = new CGPoint(x,y);
 			return orgRect;
 		}
-		public static RectangleF SetLocation (this RectangleF orgRect, SizeF point)
+		public static CGRect SetLocation (this CGRect orgRect, CGSize point)
 		{
-			orgRect.Location = new PointF(point.Width,point.Height);
+			orgRect.Location = new CGPoint(point.Width,point.Height);
 			return orgRect;
 		}
 
-		public static RectangleF SetSize (this RectangleF orgRect, SizeF size)
+		public static CGRect SetSize (this CGRect orgRect, CGSize size)
 		{
 			orgRect.Size = size;
 			return orgRect;
 		}
-		public static RectangleF SetSize (this RectangleF orgRect, float width,float height)
+		public static CGRect SetSize (this CGRect orgRect, float width,float height)
 		{
-			orgRect.Size = new SizeF(width,height);;
+			orgRect.Size = new CGSize(width,height);;
 			return orgRect;
 		}
 		
-		public static RectangleF SetHeight (this RectangleF orgRect, int height)
+		public static CGRect SetHeight (this CGRect orgRect, int height)
 		{
 			orgRect.Height = height;
 			return orgRect;
 		}
 		
-		public static RectangleF SetHeight (this RectangleF orgRect, float height)
+		public static CGRect SetHeight (this CGRect orgRect, float height)
 		{
 			orgRect.Height = height;
 			return orgRect;
 		}
 		
-		public static RectangleF SetWidth (this RectangleF orgRect, int width)
+		public static CGRect SetWidth (this CGRect orgRect, int width)
 		{
 			orgRect.Width = width;
 			return orgRect;
 		}
 		
-		public static RectangleF SetWidth (this RectangleF orgRect, float width)
+		public static CGRect SetWidth (this CGRect orgRect, float width)
 		{
 			orgRect.Width = width;
 			return orgRect;
 		}
 
-		public static RectangleF Add (this RectangleF orgRect, SizeF size)
+		public static CGRect Add (this CGRect orgRect, CGSize size)
 		{
 			orgRect.Size = orgRect.Size.Add (size);
 			return orgRect;
 		}
-		public static RectangleF Add (this RectangleF orgRect, PointF point)
+		public static CGRect Add (this CGRect orgRect, CGPoint point)
 		{
 			orgRect.Location = orgRect.Location.Add (point);
 			return orgRect;
 		}
 
-		public static RectangleF Add (this RectangleF orgRect, PointF point, SizeF size)
+		public static CGRect Add (this CGRect orgRect, CGPoint point, CGSize size)
 		{
 			orgRect.Location = orgRect.Location.Add (point);
 			orgRect.Size = orgRect.Size.Add (size);
 			return orgRect;
 		}
 		
-		public static RectangleF Add ( this RectangleF orgRect, float x, float y, float width, float height)
+		public static CGRect Add ( this CGRect orgRect, float x, float y, float width, float height)
 		{
 			orgRect.X += x;
 			orgRect.Y += y;
@@ -214,39 +217,39 @@ namespace UICalendar
 			return orgRect;
 		}
 
-		public static RectangleF AddSize (this RectangleF orgRect, float width, float height)
+		public static CGRect AddSize (this CGRect orgRect, nfloat width, nfloat height)
 		{
 			orgRect.Width += width;
 			orgRect.Height += height;
 			return orgRect;
 		}
-		public static RectangleF AddSize (this RectangleF orgRect, SizeF size)
+		public static CGRect AddSize (this CGRect orgRect, CGSize size)
 		{
 			orgRect.Width += size.Width;
 			orgRect.Height += size.Height;
 			return orgRect;
 		}
 
-		public static RectangleF AddLocation (this RectangleF orgRect, float x, float y)
+		public static CGRect AddLocation (this CGRect orgRect, float x, float y)
 		{
 			orgRect.X += x;
 			orgRect.Y += y;
 			return orgRect;
 		}
 
-		public static RectangleF Subtract (this RectangleF orgRect, SizeF size)
+		public static CGRect Subtract (this CGRect orgRect, CGSize size)
 		{
-			orgRect.Size = orgRect.Size.Subtract (size);
+			orgRect.Size = orgRect.Size.Subtract (size.ToCGPoint());
 			return orgRect;
 		}
 
-		public static RectangleF Subtract (this RectangleF orgRect, PointF point)
+		public static CGRect Subtract (this CGRect orgRect, CGPoint point)
 		{
 			orgRect.Location = orgRect.Location.Subtract (point);
 			return orgRect;
 		}
 		
-		public static RectangleF Subtract ( this RectangleF orgRect, float x, float y, float width, float height)
+		public static CGRect Subtract ( this CGRect orgRect, float x, float y, float width, float height)
 		{
 			orgRect.X -= x;
 			orgRect.Y -= y;
@@ -255,27 +258,41 @@ namespace UICalendar
 			return orgRect;
 		}
 
-		public static RectangleF SubtractSize (this RectangleF orgRect, float width, float height)
+		public static CGRect SubtractSize (this CGRect orgRect, float width, float height)
 		{
 			orgRect.Width -= width;
 			orgRect.Height -= height;
 			return orgRect;
 		}
 
-		public static RectangleF SubtractLocation (this RectangleF orgRect, float x, float y)
+		public static CGRect SubtractLocation (this CGRect orgRect, float x, float y)
 		{
 			orgRect.X -= x;
 			orgRect.Y -= y;
 			return orgRect;
 		}
 
-		public static RectangleF Subtract (this RectangleF orgRect, PointF point, SizeF size)
+		public static CGRect Subtract (this CGRect orgRect, CGPoint point, CGSize size)
 		{
 			orgRect.Location = orgRect.Location.Subtract (point);
-			orgRect.Size = orgRect.Size.Subtract (size);
+			orgRect.Size = orgRect.Size.Subtract (size.ToCGPoint());
 			return orgRect;
 		}
 		#endregion
+
+		public static DateTime NSDateToDateTime(this NSDate date)
+		{
+			DateTime reference = TimeZone.CurrentTimeZone.ToLocalTime(
+				new DateTime(2001, 1, 1, 0, 0, 0) );
+			return reference.AddSeconds(date.SecondsSinceReferenceDate);
+		}
+
+		public static NSDate DateTimeToNSDate(this DateTime date)
+		{
+			if (date.Kind == DateTimeKind.Unspecified)
+				date = DateTime.SpecifyKind (date, DateTimeKind.Local /*or DateTimeKind.Utc, this depends on each app */);
+				return (NSDate) date;
+			}
 	}
 }
 
