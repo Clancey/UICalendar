@@ -13,17 +13,17 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 using System;
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
+using Foundation;
+using UIKit;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using MonoTouch.CoreAnimation;
+using CoreGraphics;
+using CoreAnimation;
 using System.Linq;
-using MonoTouch.EventKit;
-using MonoTouch.EventKitUI;
-using MonoTouch.ObjCRuntime;
-using MonoTouch.CoreGraphics;
+using EventKit;
+using EventKitUI;
+using ObjCRuntime;
+using CoreGraphics;
 using MonoTouch.Dialog;
 
 namespace UICalendar
@@ -147,20 +147,20 @@ namespace UICalendar
 		public CalendarDayTimelineView SingleDayView { get; set; }
 		public TrueWeekView WeekView { get; set; }
 		// public TrueWeekViewController WeekController { get; set; }
-		public NSAction AddNewEvent { get; set; }
+		public Action AddNewEvent { get; set; }
 		private UIToolbar bottomBar;
 		public EKEventEditViewController addController;
 		bool hasLoaded;
 		
-		public RotatingCalendarView (RectangleF rect) : this(rect,0)
+		public RotatingCalendarView (CGRect rect) : this(rect,0)
 		{
 			
 		}
 		
-		public RotatingCalendarView (RectangleF rect, float tabBarHeight)
+		public RotatingCalendarView (CGRect rect, float tabBarHeight)
 		{
 			
-			notificationObserver = NSNotificationCenter.DefaultCenter.AddObserver ("EKEventStoreChangedNotification", EventsChanged);
+			notificationObserver = NSNotificationCenter.DefaultCenter.AddObserver ((NSString)"EKEventStoreChangedNotification", EventsChanged);
 			this.Title = "Calendar";
 			CurrentDate = DateTime.Today;
 			SingleDayView = new CalendarDayTimelineView (rect, tabBarHeight);
@@ -198,7 +198,7 @@ namespace UICalendar
 				addController.EventStore = Util.MyEventStore;
 				addController.Event = Util.getEvent (theEvent);
 				
-				addController.Completed += delegate(object sender, EKEventEditEventArgs e) { this.DismissModalViewControllerAnimated (true); };
+				addController.Completed += delegate(object sender, EKEventEditEventArgs e) { this.DismissModalViewController (true); };
 				
 				try {
 					if (this.ModalViewController == null)
@@ -251,7 +251,7 @@ namespace UICalendar
 			forceRotate = true;
 			var vc = new UIViewController();
 			this.NavigationController.PresentModalViewController(vc, false);
-			this.NavigationController.DismissModalViewControllerAnimated(false);
+			this.NavigationController.DismissModalViewController(false);
 			forceRotate = false;
 		}
 
@@ -265,8 +265,8 @@ namespace UICalendar
 				// set the addController's event store to the current event store.
 				addController.EventStore = Util.MyEventStore;
 				addController.Event = EKEvent.FromStore(Util.MyEventStore);
-				addController.Event.StartDate = DateTime.Now;
-				addController.Event.EndDate = DateTime.Now.AddHours(1);
+				addController.Event.StartDate = DateTime.Now.DateTimeToNSDate();
+				addController.Event.EndDate = DateTime.Now.AddHours(1).DateTimeToNSDate();
 				
 				addController.Completed += delegate(object theSender, EKEventEditEventArgs eva) {
 					switch (eva.Action)
@@ -274,7 +274,7 @@ namespace UICalendar
 					case EKEventEditViewAction.Canceled :
 						case EKEventEditViewAction.Deleted :
 						case EKEventEditViewAction.Saved:
-						this.NavigationController.DismissModalViewControllerAnimated(true);
+						this.NavigationController.DismissModalViewController(true);
 						
 						break;
 					}
@@ -396,18 +396,18 @@ namespace UICalendar
 					color = new UIColor (theEvent.Calendar.CGColor);
 				}
 			}
-			Frame = new RectangleF (0, 0, 0, 0);
+			Frame = new CGRect (0, 0, 0, 0);
 			setupCustomInitialisation ();
 		}
 
 
 		public CalendarDayEventView ()
 		{
-			Frame = new RectangleF (0, 0, 0, 0);
+			Frame = new CGRect (0, 0, 0, 0);
 			setupCustomInitialisation ();
 		}
 
-		public CalendarDayEventView (RectangleF frame)
+		public CalendarDayEventView (CGRect frame)
 		{
 			Frame = frame;
 			setupCustomInitialisation ();
@@ -485,7 +485,7 @@ namespace UICalendar
 			layer.BorderColor = UIColor.LightGray.CGColor;
 		}
 
-		public override void Draw (RectangleF rect)
+		public override void Draw (CGRect rect)
 		{
 			CGContext context = UIGraphics.GetCurrentContext ();
 			
@@ -493,28 +493,32 @@ namespace UICalendar
 			
 			
 			// Set shadow
-			context.SetShadowWithColor (new SizeF (0.0f, 1.0f), 0.7f, UIColor.Black.CGColor);
+			context.SetShadow (new CGSize (0.0f, 1.0f), 0.7f, UIColor.Black.CGColor);
 			
 			// Set text color
 			UIColor.White.SetColor ();
 			
-			var titleRect = new RectangleF (Bounds.X + consts.HORIZONTAL_OFFSET, Bounds.Y + consts.VERTICAL_OFFSET, Bounds.Width - 2 * consts.HORIZONTAL_OFFSET, consts.EVENT_FONT_SIZE + 4.0f);
+			var titleRect = new CGRect (Bounds.X + consts.HORIZONTAL_OFFSET, Bounds.Y + consts.VERTICAL_OFFSET, Bounds.Width - 2 * consts.HORIZONTAL_OFFSET, consts.EVENT_FONT_SIZE + 4.0f);
 			
-			var locationRect = new RectangleF (Bounds.X + consts.HORIZONTAL_OFFSET, Bounds.Y + consts.VERTICAL_OFFSET + consts.EVENT_FONT_SIZE + 4.0f, Bounds.Width - 2 * consts.HORIZONTAL_OFFSET, consts.EVENT_FONT_SIZE + 4.0f);
+			var locationRect = new CGRect (Bounds.X + consts.HORIZONTAL_OFFSET, Bounds.Y + consts.VERTICAL_OFFSET + consts.EVENT_FONT_SIZE + 4.0f, Bounds.Width - 2 * consts.HORIZONTAL_OFFSET, consts.EVENT_FONT_SIZE + 4.0f);
 			
 			// Drawing code
+
 			if (Bounds.Height > consts.VERTICAL_DIFF) {
 				// Draw both title and location
 				if (!string.IsNullOrEmpty (Title)) {
-					DrawString (Title, titleRect, UIFont.BoldSystemFontOfSize (consts.EVENT_FONT_SIZE), UILineBreakMode.TailTruncation, UITextAlignment.Left);
+					var s = new NSString (Title);
+					s.DrawString (titleRect, UIFont.BoldSystemFontOfSize (consts.EVENT_FONT_SIZE), UILineBreakMode.TailTruncation, UITextAlignment.Left);
 				}
 				if (!string.IsNullOrEmpty (location)) {
-					DrawString (location, locationRect, UIFont.SystemFontOfSize (consts.EVENT_FONT_SIZE), UILineBreakMode.TailTruncation, UITextAlignment.Left);
+					var s = new NSString (location);
+					s.DrawString (locationRect, UIFont.SystemFontOfSize (consts.EVENT_FONT_SIZE), UILineBreakMode.TailTruncation, UITextAlignment.Left);
 				}
 			} else {
 				// Draw only title
 				if (!string.IsNullOrEmpty (Title)) {
-					DrawString (Title, titleRect, UIFont.BoldSystemFontOfSize (consts.EVENT_FONT_SIZE), UILineBreakMode.TailTruncation, UITextAlignment.Left);
+					var s = new NSString (Title);
+					s.DrawString (titleRect, UIFont.BoldSystemFontOfSize (consts.EVENT_FONT_SIZE), UILineBreakMode.TailTruncation, UITextAlignment.Left);
 				}
 			}
 			
@@ -534,17 +538,17 @@ namespace UICalendar
 		public DateChanged dateChanged;
 		public List<CalendarDayEventView> monthEvents;
 		public DateTime currentMonth;
-		private float NavBarHeight;
+		private nfloat NavBarHeight;
 		public EventClicked OnEventClicked;
 		public EventClicked OnEventDoubleClicked;
-		private RectangleF orgRect;
+		private CGRect orgRect;
 		private UIView parentScrollView;
 		private UIScrollView scrollView;
 		private UIView allDayView;
 		private TimeLineView timelineView;
 
-		private float curScrollH;
-		private float curScrollW;
+		private nfloat curScrollH;
+		private nfloat curScrollW;
 		public Action ForceAutoRotate;
 		public bool UseCalendar { get; set; }
 		public bool EventsNeedRefresh { get; set; }
@@ -557,7 +561,7 @@ namespace UICalendar
 		private UISegmentedControl calViewSwitcher;
 		private UIBarButtonItem todayBtn;
 
-		public CalendarDayTimelineView (RectangleF rect, float tabBarHeight)
+		public CalendarDayTimelineView (CGRect rect, float tabBarHeight)
 		{
 			orgRect = rect;
 			NavBarHeight = UIApplication.SharedApplication.StatusBarFrame.Height;
@@ -570,7 +574,7 @@ namespace UICalendar
 		{
 			var screenFrame = UIScreen.MainScreen.Bounds;
 			NavBarHeight = UIApplication.SharedApplication.StatusBarFrame.Height;
-			Frame = new RectangleF (0, 0, screenFrame.Width, screenFrame.Height);
+			Frame = new CGRect (0, 0, screenFrame.Width, screenFrame.Height);
 			orgRect = Frame;
 			setup ();
 			setupCustomInitialisation ();
@@ -596,7 +600,7 @@ namespace UICalendar
 			
 		}
 
-		private float CurrentWidth {
+		private nfloat CurrentWidth {
 			get {
 				switch (UIDevice.CurrentDevice.Orientation) {
 				case UIDeviceOrientation.Portrait:
@@ -610,7 +614,7 @@ namespace UICalendar
 			}
 		}
 
-		private float CurrentHeight {
+		private nfloat CurrentHeight {
 			get {
 				switch (UIDevice.CurrentDevice.Orientation) {
 				case UIDeviceOrientation.Portrait:
@@ -624,18 +628,28 @@ namespace UICalendar
 			}
 		}
 
+//		[Export("swipeLeft")]
+//		public void swipeLeft (UISwipeGestureRecognizer sender)
+//		{
+//			SetDate (currentDate.AddDays (-1));
+//		}
+//
+//		[Export("swipeRight")]
+//		public void swipeRight (UISwipeGestureRecognizer sender)
+//		{
+//			SetDate (currentDate.AddDays (1));
+//		}
 		[Export("swipeLeft")]
-		public void swipeLeft (UISwipeGestureRecognizer sender)
+		public void swipeLeft ()
 		{
 			SetDate (currentDate.AddDays (-1));
 		}
 
 		[Export("swipeRight")]
-		public void swipeRight (UISwipeGestureRecognizer sender)
+		public void swipeRight ()
 		{
 			SetDate (currentDate.AddDays (1));
 		}
-
 		public void SetDate (DateTime date)
 		{
 			currentDate = date;
@@ -659,7 +673,7 @@ namespace UICalendar
 			// Initialization code
 			// events = new List<CalendarDayEventView>();
 			// Add main scroll view
-			var viewFrame = new RectangleF (Bounds.X, Bounds.Y, CurrentWidth, CurrentHeight - bottomBarH);
+			var viewFrame = new CGRect (Bounds.X, Bounds.Y, CurrentWidth, CurrentHeight - bottomBarH);
 			dayView = new UIView (viewFrame);
 			monthView = new UIView (viewFrame);
 			weekView = new UIView (viewFrame);
@@ -688,27 +702,30 @@ namespace UICalendar
 			
 		}
 
-		public override void Draw (RectangleF rect)
+		public override void Draw (CGRect rect)
 		{
 			// DrawDayLabels(rect);
 			if (Settings.lastCal == 0) {
-				Images.calendarTopBar.Draw (new PointF (0, 0));
+				//Images.calendarTopBar.Draw (new CGPoint (0, 0));
+				Images.calendarTopBar.Draw (rect);
 				DrawDayLabel (rect);
 			}
 			//	base.Draw (rect);
 		}
 
-		private void DrawDayLabel (RectangleF rect)
+		private void DrawDayLabel (CGRect rect)
 		{
-			var r = new RectangleF (48, 12, CurrentWidth - 93, 35 );
+			var r = new CGRect (48, 12, CurrentWidth - 93, 35 );
 			if(currentDate.Date == DateTime.Today)
 				UIColor.Blue.SetColor();
 			else
 				UIColor.DarkGray.SetColor ();
 			string dayOfWeek = currentDate.DayOfWeek.ToString();
 			string dateString =  currentDate.ToString("MMM dd yyyy");
-			DrawString (dayOfWeek, r, UIFont.BoldSystemFontOfSize (19), UILineBreakMode.WordWrap, UITextAlignment.Left);
-			DrawString (dateString, r, UIFont.BoldSystemFontOfSize (19), UILineBreakMode.WordWrap, UITextAlignment.Right);
+			var s1 = new NSString (dayOfWeek);
+			s1.DrawString (r, UIFont.BoldSystemFontOfSize (19), UILineBreakMode.WordWrap, UITextAlignment.Left);
+			var s2 = new NSString (dateString);
+			s2.DrawString (r, UIFont.BoldSystemFontOfSize (19), UILineBreakMode.WordWrap, UITextAlignment.Right);
 		}
 
 		private void LoadButtons ()
@@ -717,20 +734,20 @@ namespace UICalendar
 			_leftButton.TouchUpInside += delegate { SetDate (currentDate.AddDays (-1)); };
 			_leftButton.SetImage (Images.leftArrow, UIControlState.Normal);
 			dayView.AddSubview (_leftButton);
-			_leftButton.Frame = new RectangleF (10, 5, 35, 35);
+			_leftButton.Frame = new CGRect (10, 5, 35, 35);
 			
 			_rightButton = UIButton.FromType (UIButtonType.Custom);
 			_rightButton.TouchUpInside += delegate { SetDate (currentDate.AddDays (1)); };
 			_rightButton.SetImage (Images.rightArrow, UIControlState.Normal);
 			dayView.AddSubview (_rightButton);
-			_rightButton.Frame = new RectangleF (CurrentWidth - 45, 5, 35, 35);
+			_rightButton.Frame = new CGRect (CurrentWidth - 45, 5, 35, 35);
 		}
 
 		private UIView getScrollView ()
 		{
-			parentScrollView = new UIView (new RectangleF (Bounds.X, Bounds.Y + 44, CurrentWidth, CurrentHeight - 44 - bottomBarH));
+			parentScrollView = new UIView (new CGRect (Bounds.X, Bounds.Y + 44, CurrentWidth, CurrentHeight - 44 - bottomBarH));
 			scrollView = new UIScrollView (parentScrollView.Bounds);
-			scrollView.ContentSize = new SizeF (CurrentWidth, consts.TIMELINE_HEIGHT);
+			scrollView.ContentSize = new CGSize (CurrentWidth, consts.TIMELINE_HEIGHT);
 			scrollView.ScrollEnabled = true;
 			scrollView.MaximumZoomScale = 100f;
 			scrollView.MinimumZoomScale = .01f;
@@ -751,11 +768,11 @@ namespace UICalendar
 		private void setBottomToolBar ()
 		{
 			var scrollFrame = parentScrollView.Frame;
-			bottomBar = new UIToolbar (new RectangleF (scrollFrame.X, scrollFrame.Height, scrollFrame.Width, bottomBarH)){TintColor = UIColor.Black};
-			calViewSwitcher = new UISegmentedControl (new RectangleF (scrollFrame.Width / 2 - 90, 5, 180, 28));
+			bottomBar = new UIToolbar (new CGRect (scrollFrame.X, scrollFrame.Height, scrollFrame.Width, bottomBarH)){TintColor = UIColor.Black};
+			calViewSwitcher = new UISegmentedControl (new CGRect (scrollFrame.Width / 2 - 90, 5, 180, 28));
 			calViewSwitcher.InsertSegment ("Day", 0, false);
 			calViewSwitcher.InsertSegment ("Month", 1, false);
-			calViewSwitcher.InsertSegment ("Week", 2, false);
+			//calViewSwitcher.InsertSegment ("Week", 2, false);
 			calViewSwitcher.ControlStyle = UISegmentedControlStyle.Bar;
 			calViewSwitcher.SelectedSegment = Settings.lastCal;
 			calViewSwitcher.ValueChanged += delegate {Settings.lastCal = calViewSwitcher.SelectedSegment; ViewSwitched (); };
@@ -784,7 +801,7 @@ namespace UICalendar
 
 		private TimeLineView getTimeLineView ()
 		{
-			timelineView = new TimeLineView (new RectangleF (Bounds.X, Bounds.Y, CurrentWidth, consts.TIMELINE_HEIGHT));
+			timelineView = new TimeLineView (new CGRect (Bounds.X, Bounds.Y, CurrentWidth, consts.TIMELINE_HEIGHT));
 			timelineView.BackgroundColor = UIColor.White;
 			
 			
@@ -802,7 +819,7 @@ namespace UICalendar
 
 		public void ScrollToTime (DateTime time)
 		{
-			scrollView.ScrollRectToVisible (new RectangleF (0, GetStartPosition (time), 300, CurrentHeight), false);
+			scrollView.ScrollRectToVisible (new CGRect (0, GetStartPosition (time), 300, CurrentHeight), false);
 		}
 
 		private float GetStartPosition (DateTime time)
@@ -862,11 +879,11 @@ namespace UICalendar
 		{
 			buildAllDayView();
 			scrollView.Frame = parentScrollView.Bounds;
-			scrollView.ContentSize = new SizeF (CurrentWidth, consts.TIMELINE_HEIGHT);
+			scrollView.ContentSize = new CGSize (CurrentWidth, consts.TIMELINE_HEIGHT);
 			// Remove all previous view event
 			foreach (UIView view in scrollView.Subviews) {
 				if (view is TimeLineView) {
-					timelineView.Frame = new RectangleF (Bounds.X, Bounds.Y, CurrentWidth, consts.TIMELINE_HEIGHT);
+					timelineView.Frame = new CGRect (Bounds.X, Bounds.Y, CurrentWidth, consts.TIMELINE_HEIGHT);
 					timelineView.CurrentWidth = CurrentWidth;
 				} else {
 					view.RemoveFromSuperview ();
@@ -941,12 +958,12 @@ namespace UICalendar
 							}
 							*/
 
-						float availableWidth = CurrentWidth - (consts.HORIZONTAL_OFFSET + consts.TIME_WIDTH + consts.PERIOD_WIDTH + consts.HORIZONTAL_LINE_DIFF) - consts.HORIZONTAL_LINE_DIFF - consts.EVENT_HORIZONTAL_DIFF;
-						float currentWidth = availableWidth / theBlock.Columns.Count;
+						nfloat availableWidth = CurrentWidth - (consts.HORIZONTAL_OFFSET + consts.TIME_WIDTH + consts.PERIOD_WIDTH + consts.HORIZONTAL_LINE_DIFF) - consts.HORIZONTAL_LINE_DIFF - consts.EVENT_HORIZONTAL_DIFF;
+						nfloat currentWidth = availableWidth / theBlock.Columns.Count;
 						int currentInt = theEvent.Column.Number;
-						float x = consts.HORIZONTAL_OFFSET + consts.TIME_WIDTH + consts.PERIOD_WIDTH + consts.HORIZONTAL_LINE_DIFF + consts.EVENT_HORIZONTAL_DIFF + (currentWidth * currentInt);
-						float y = hourStartPosition + minuteStartPosition + consts.EVENT_VERTICAL_DIFF;
-						var eventFrame = new RectangleF (x, y, currentWidth, eventHeight);
+						nfloat x = consts.HORIZONTAL_OFFSET + consts.TIME_WIDTH + consts.PERIOD_WIDTH + consts.HORIZONTAL_LINE_DIFF + consts.EVENT_HORIZONTAL_DIFF + (currentWidth * currentInt);
+						nfloat y = hourStartPosition + minuteStartPosition + consts.EVENT_VERTICAL_DIFF;
+						var eventFrame = new CGRect (x, y, currentWidth, eventHeight);
 						
 						theEvent.Frame = eventFrame;
 						//event.delegate = self;
@@ -960,7 +977,7 @@ namespace UICalendar
 					}
 				}
 			}
-			scrollView.ScrollRectToVisible (new RectangleF (curScrollW, curScrollH, scrollView.Frame.Width, scrollView.Frame.Height), false);
+			scrollView.ScrollRectToVisible (new CGRect (curScrollW, curScrollH, scrollView.Frame.Width, scrollView.Frame.Height), false);
 			//disable scroll to time, keep current scroll;
 		}
 		
@@ -971,14 +988,14 @@ namespace UICalendar
 		
 			var dailyEvents = monthEvents.Where (day => (day.startDate.Date == currentDate || day.endDate.Date == currentDate) && day.AllDay).ToList ();
 			
-			var baseFrame = new RectangleF (Bounds.X, Bounds.Y + 44, CurrentWidth, CurrentHeight - 44 - bottomBarH);
+			var baseFrame = new CGRect (Bounds.X, Bounds.Y + 44, CurrentWidth, CurrentHeight - 44 - bottomBarH);
 			if(dailyEvents.Count == 0)
 			{
 				parentScrollView.Frame = baseFrame;
 				return;	
 			}
 			var height = 15 + dailyEvents.Count() * (consts.AllDayEventHeight );
-			allDayView = new UIView(new RectangleF(0,baseFrame.Y,this.CurrentWidth, height));
+			allDayView = new UIView(new CGRect(0,baseFrame.Y,this.CurrentWidth, height));
 			allDayView.BackgroundColor = UIColor.White;
 			baseFrame.Y += height;
 			baseFrame.Height -= height;
@@ -987,19 +1004,19 @@ namespace UICalendar
 			var currentH = 5f;
 			foreach(var theEvent in dailyEvents)
 			{
-				theEvent.Frame = new RectangleF(x,currentH ,CurrentWidth - x - (consts.HORIZONTAL_OFFSET),consts.AllDayEventHeight);
+				theEvent.Frame = new CGRect(x,currentH ,CurrentWidth - x - (consts.HORIZONTAL_OFFSET),consts.AllDayEventHeight);
 				allDayView.AddSubview(theEvent);
 				currentH += 5f + consts.AllDayEventHeight;
 				current ++;
 			}
 			UIFont timeFont = UIFont.BoldSystemFontOfSize (consts.FONT_SIZE);
-			var label = new UILabel(new RectangleF(consts.HORIZONTAL_OFFSET,(height - consts.FONT_SIZE - 9f)/2,x-(consts.HORIZONTAL_OFFSET*2),consts.FONT_SIZE + 4f));
+			var label = new UILabel(new CGRect(consts.HORIZONTAL_OFFSET,(height - consts.FONT_SIZE - 9f)/2,x-(consts.HORIZONTAL_OFFSET*2),consts.FONT_SIZE + 4f));
 			label.Font = timeFont;
 			label.TextColor = UIColor.Black;
 			label.Text = "all-day";
 			//label.TextAlignment = UITextAlignment.Right;
 			allDayView.AddSubview(label);
-			allDayView.AddSubview(new HorizontalDividerView(new RectangleF(0,height - 5,CurrentWidth,5)));
+			allDayView.AddSubview(new HorizontalDividerView(new CGRect(0,height - 5,CurrentWidth,5)));
 			parentScrollView.Frame = baseFrame;
 			dayView.AddSubview(allDayView);
 			
@@ -1018,7 +1035,7 @@ namespace UICalendar
 		UIView eventDvcTableView;
 		public void buildMonthView ()
 		{
-			calMonthView = new CalendarMonthView (currentDate, monthEvents.Select (x => x.startDate.Date).ToArray ());
+			calMonthView = new CalendarMonthView (currentDate, monthEvents.Select (x => x.startDate.Date).ToArray (), CurrentWidth);
 			eventDvc = buildMonthSingleDayEventList (calMonthView.Frame);
 			calMonthView.IsDayMarkedDelegate += date => { return monthEvents.Where (x => x.startDate.Date == date.Date || x.endDate == date.Date).Count () > 0; };
 			calMonthView.OnDateSelected += date =>
@@ -1026,7 +1043,7 @@ namespace UICalendar
 				//SelectedView = 0;
 				SetDate (date);
 				eventDvc.TableView.RemoveFromSuperview ();
-				eventDvc = buildMonthSingleDayEventList (new RectangleF(calMonthView.Frame.Location, calMonthView.Size));
+				eventDvc = buildMonthSingleDayEventList (new CGRect(calMonthView.Frame.Location, calMonthView.Size));
 				eventDvc.Root = getMonthDayEvents ();
 				monthView.AddSubview (eventDvc.TableView);
 				monthView.BringSubviewToFront (calMonthView);
@@ -1036,7 +1053,7 @@ namespace UICalendar
 			eventDvc.Root = getMonthDayEvents ();
 			calMonthView.SizeChanged += delegate {
 				eventDvc.TableView.RemoveFromSuperview ();
-				eventDvc = buildMonthSingleDayEventList (new RectangleF(calMonthView.Frame.Location, calMonthView.Size));
+				eventDvc = buildMonthSingleDayEventList (new CGRect(calMonthView.Frame.Location, calMonthView.Size));
 				eventDvc.Root = getMonthDayEvents ();
 				monthView.AddSubview (eventDvc.TableView);
 				monthView.BringSubviewToFront (calMonthView);
@@ -1044,7 +1061,7 @@ namespace UICalendar
 			calMonthView.MonthChanged += delegate {
 				SetDate (calMonthView.CurrentMonthYear);
 				eventDvc.TableView.RemoveFromSuperview ();
-				eventDvc = buildMonthSingleDayEventList (new RectangleF(calMonthView.Frame.Location, calMonthView.Size));
+				eventDvc = buildMonthSingleDayEventList (new CGRect(calMonthView.Frame.Location, calMonthView.Size));
 				eventDvc.Root = getMonthDayEvents ();
 				monthView.AddSubview (eventDvc.TableView);
 				monthView.BringSubviewToFront (calMonthView);
@@ -1055,11 +1072,11 @@ namespace UICalendar
 			buildMonthSingleDayEventList (calMonthView.Frame);
 		}
 
-		public DialogViewController buildMonthSingleDayEventList (RectangleF rect)
+		public DialogViewController buildMonthSingleDayEventList (CGRect rect)
 		{
 			var dvc = new DialogViewController (UITableViewStyle.Plain, null);
 			dvc.Style = UITableViewStyle.Plain;
-			dvc.View.Frame = new RectangleF (0, rect.Height + rect.Y, rect.Width, monthView.Frame.Height - rect.Height - bottomBarH);
+			dvc.View.Frame = new CGRect (0, rect.Height + rect.Y, rect.Width, monthView.Frame.Height - rect.Height - bottomBarH);
 			return dvc;
 		}
 		public RootElement getMonthDayEvents ()
@@ -1083,14 +1100,14 @@ namespace UICalendar
 
 		internal class TimeLineView : UIView
 		{
-			public TimeLineView (RectangleF rect)
+			public TimeLineView (CGRect rect)
 			{
 				Frame = rect;
 				setupCustomInitialisation ();
 			}
 
 
-			public float CurrentWidth { get; set; }
+			public nfloat CurrentWidth { get; set; }
 
 			public void setupCustomInitialisation ()
 			{
@@ -1101,7 +1118,7 @@ namespace UICalendar
 // representing time aka 12 (12 am), 1 (1 am) ... 25 x
 
 
-			public override void Draw (RectangleF rect)
+			public override void Draw (CGRect rect)
 			{
 				// Drawing code
 				// Here Draw timeline from 12 am to noon to 12 am next day
@@ -1120,14 +1137,14 @@ namespace UICalendar
 					timeColor.SetColor ();
 					string time = consts.times[i];
 					
-					var timeRect = new RectangleF (consts.HORIZONTAL_OFFSET, consts.VERTICAL_OFFSET + i * consts.VERTICAL_DIFF, consts.TIME_WIDTH, consts.FONT_SIZE + 4.0f);
+					var timeRect = new CGRect (consts.HORIZONTAL_OFFSET, consts.VERTICAL_OFFSET + i * consts.VERTICAL_DIFF, consts.TIME_WIDTH, consts.FONT_SIZE + 4.0f);
 					
 					// Find noon
 					if (i == 24 / 2) {
-						timeRect = new RectangleF (consts.HORIZONTAL_OFFSET, consts.VERTICAL_OFFSET + i * consts.VERTICAL_DIFF, consts.TIME_WIDTH + consts.PERIOD_WIDTH, consts.FONT_SIZE + 4.0f);
+						timeRect = new CGRect (consts.HORIZONTAL_OFFSET, consts.VERTICAL_OFFSET + i * consts.VERTICAL_DIFF, consts.TIME_WIDTH + consts.PERIOD_WIDTH, consts.FONT_SIZE + 4.0f);
 					}
-					
-					DrawString (time, timeRect, timeFont, UILineBreakMode.WordWrap, UITextAlignment.Right);
+					var s = new NSString (time);
+					s.DrawString (timeRect, timeFont, UILineBreakMode.WordWrap, UITextAlignment.Right);
 					
 					
 					// Draw period
@@ -1136,7 +1153,8 @@ namespace UICalendar
 						periodColor.SetColor ();
 						
 						string period = consts.periods[i];
-						DrawString (period, new RectangleF (consts.HORIZONTAL_OFFSET + consts.TIME_WIDTH, consts.VERTICAL_OFFSET + i * consts.VERTICAL_DIFF, consts.PERIOD_WIDTH, consts.FONT_SIZE + 4.0f), periodFont, UILineBreakMode.WordWrap, UITextAlignment.Right);
+						var s1 = new NSString (period);
+						s1.DrawString (new CGRect (consts.HORIZONTAL_OFFSET + consts.TIME_WIDTH, consts.VERTICAL_OFFSET + i * consts.VERTICAL_DIFF, consts.PERIOD_WIDTH, consts.FONT_SIZE + 4.0f), periodFont, UILineBreakMode.WordWrap, UITextAlignment.Right);
 					}
 					
 					
@@ -1144,7 +1162,7 @@ namespace UICalendar
 					
 					// Save the context state 
 					context.SaveState ();
-					context.SetStrokeColorWithColor (UIColor.LightGray.CGColor);
+					context.SetStrokeColor (UIColor.LightGray.CGColor);
 					
 					// Draw line with a black stroke color
 					// Draw line with a 1.0 stroke width
@@ -1160,7 +1178,7 @@ namespace UICalendar
 						context.BeginPath ();
 						context.MoveTo (consts.HORIZONTAL_OFFSET + consts.TIME_WIDTH + consts.PERIOD_WIDTH + consts.HORIZONTAL_LINE_DIFF, consts.VERTICAL_OFFSET + i * consts.VERTICAL_DIFF + (float)Math.Round (((consts.FONT_SIZE + 4.0f) / 2.0f)) + (float)Math.Round ((consts.VERTICAL_DIFF / 2.0f)));
 						context.AddLineToPoint (CurrentWidth, consts.VERTICAL_OFFSET + i * consts.VERTICAL_DIFF + (float)Math.Round (((consts.FONT_SIZE + 4.0f) / 2.0f)) + (float)Math.Round ((consts.VERTICAL_DIFF / 2.0f)));
-						float[] dash1 = { 4.0f, 3.0f };
+						nfloat[] dash1 = { 4.0f, 3.0f };
 						context.SetLineDash (0.0f, dash1, 2);
 						context.StrokePath ();
 					}
@@ -1182,7 +1200,7 @@ namespace UICalendar
 
 		public TrueWeekViewController (DateTime date)
 		{
-			weekView = new TrueWeekView (date) { Frame = new RectangleF (0, 0, 480, 220) };
+			weekView = new TrueWeekView (date) { Frame = new CGRect (0, 0, 480, 220) };
 			SetCurrentDate (date);
 			View.AddSubview (weekView);
 		}
@@ -1222,7 +1240,7 @@ namespace UICalendar
 			SetDayOfWeek (date);
 			BackgroundColor = UIColor.White;
 			SetupWindow ();
-			curRect = new RectangleF (0, GetStartPosition (DateTime.Now), myScrollView.ContentSize.Width, myScrollView.ContentSize.Height);
+			curRect = new CGRect (0, GetStartPosition (DateTime.Now), myScrollView.ContentSize.Width, myScrollView.ContentSize.Height);
 			curZoom = myScrollView.ZoomScale;
 		}
 
@@ -1233,8 +1251,8 @@ namespace UICalendar
 		private ScrollViewWithHeader myScrollView { get; set; }
 		public bool UseCalendar { get; set; }
 		public bool EventsNeedRefresh { get; set; }
-		private RectangleF curRect;
-		private float curZoom;
+		private CGRect curRect;
+		private nfloat curZoom;
 
 
 		public void SetDayOfWeek (DateTime date)
@@ -1266,7 +1284,7 @@ namespace UICalendar
 			UILabel alldayLabel = null;
 			if(allDayView != null)
 			{
-				allDayView.Frame = allDayView.Frame.SetLocation(new PointF(0,HeaderView.Frame.Height));
+				allDayView.Frame = allDayView.Frame.SetLocation(new CGPoint(0,HeaderView.Frame.Height));
 				HeaderView.Frame = HeaderView.Frame.AddSize(0,allDayView.Frame.Height);
 				header.Frame = HeaderView.Frame;
 				HeaderView.AddSubview(allDayView);
@@ -1394,7 +1412,7 @@ namespace UICalendar
 							int currentInt = theEvent.Column.Number;
 							float x = ((currentWidth) * currentInt) + 2 + ((availableWidth + 2) * dayColumn);
 							float y = hourStartPosition + minuteStartPosition;
-							var eventFrame = new RectangleF (x, y, currentWidth, eventHeight);
+							var eventFrame = new CGRect (x, y, currentWidth, eventHeight);
 							
 							theEvent.Frame = eventFrame;
 							theEvent.OnEventClicked += theDate => { eventWasClicked (theDate); };
@@ -1432,7 +1450,7 @@ namespace UICalendar
 			var maxCount = weekEvents.GroupBy(dayEvent => (dayEvent.startDate - FirstDayOfWeek).Days).Select( dayEvent => dayEvent.Count()).Max();
 			
 			var height = 15 + maxCount * (consts.AllDayEventHeight );
-			allDayView = new UIView(new RectangleF(0,0,TotalWidth, height));
+			allDayView = new UIView(new CGRect(0,0,TotalWidth, height));
 			//allDayView.BackgroundColor = UIColor.White;
 			var xValue = 2;//consts.HORIZONTAL_OFFSET + consts.TIME_WIDTH + consts.PERIOD_WIDTH + consts.HORIZONTAL_LINE_DIFF + consts.EVENT_HORIZONTAL_DIFF;
 			
@@ -1444,14 +1462,14 @@ namespace UICalendar
 				foreach(var theEvent in dayEvents)
 				{
 					
-					theEvent.Frame = new RectangleF(xValue + col * DayWidth,currentH ,DayWidth - 2,consts.AllDayEventHeight);
+					theEvent.Frame = new CGRect(xValue + col * DayWidth,currentH ,DayWidth - 2,consts.AllDayEventHeight);
 					allDayView.AddSubview(theEvent);
 					currentH += 5f + consts.AllDayEventHeight;
 					current ++;
 				}
 			}
 			//allDayView.AddSubview(label);
-			allDayView.AddSubview(new HorizontalDividerView(new RectangleF(0,height - 5,TotalWidth,5)));
+			allDayView.AddSubview(new HorizontalDividerView(new CGRect(0,height - 5,TotalWidth,5)));
 			//parentScrollView.Frame = baseFrame;
 			//dayView.AddSubview(allDayView);
 			
@@ -1477,7 +1495,7 @@ namespace UICalendar
 			public GridLineView ()
 			{
 				BackgroundColor = UIColor.White;
-				Frame = new RectangleF (0, 0, TotalWidth, totalH);
+				Frame = new CGRect (0, 0, TotalWidth, totalH);
 				setupCustomInitialisation ();
 			}
 
@@ -1489,7 +1507,7 @@ namespace UICalendar
 				// Initialization code
 			}
 
-			public override void Draw (RectangleF rect)
+			public override void Draw (CGRect rect)
 			{
 				// Drawing code
 				// Here Draw timeline from 12 am to noon to 12 am next day
@@ -1521,7 +1539,7 @@ namespace UICalendar
 					
 					// Save the context state 
 					context.SaveState ();
-					context.SetStrokeColorWithColor (UIColor.LightGray.CGColor);
+					context.SetStrokeColor (UIColor.LightGray.CGColor);
 					
 					// Draw line with a black stroke color
 					// Draw line with a 1.0 stroke width
@@ -1537,7 +1555,7 @@ namespace UICalendar
 						context.BeginPath ();
 						context.MoveTo (0, consts.VERTICAL_OFFSET + i * consts.VERTICAL_DIFF + (float)Math.Round (((consts.FONT_SIZE + 4.0f) / 2.0f)) + (float)Math.Round ((consts.VERTICAL_DIFF / 2.0f)));
 						context.AddLineToPoint (TotalWidth, consts.VERTICAL_OFFSET + i * consts.VERTICAL_DIFF + (float)Math.Round (((consts.FONT_SIZE + 4.0f) / 2.0f)) + (float)Math.Round ((consts.VERTICAL_DIFF / 2.0f)));
-						float[] dash1 = { 4.0f, 3.0f };
+						nfloat[] dash1 = { 4.0f, 3.0f };
 						context.SetLineDash (0.0f, dash1, 2);
 						context.StrokePath ();
 					}
@@ -1559,7 +1577,7 @@ namespace UICalendar
 			public TimeView ()
 			{
 				BackgroundColor = UIColor.White;
-				Frame = new RectangleF (0, 0, consts.TIME_WIDTH + consts.VERTICAL_OFFSET + consts.PERIOD_WIDTH, (24 * consts.VERTICAL_OFFSET) + (23 * consts.VERTICAL_DIFF));
+				Frame = new CGRect (0, 0, consts.TIME_WIDTH + consts.VERTICAL_OFFSET + consts.PERIOD_WIDTH, (24 * consts.VERTICAL_OFFSET) + (23 * consts.VERTICAL_DIFF));
 			}
 
 
@@ -1573,7 +1591,7 @@ namespace UICalendar
 			// representing time periods aka AM or PM
 			// Matching the array of times 25 x
 			
-			public override void Draw (RectangleF rect)
+			public override void Draw (CGRect rect)
 			{
 				// Drawing code
 				// Here Draw timeline from 12 am to noon to 12 am next day
@@ -1592,14 +1610,14 @@ namespace UICalendar
 					timeColor.SetColor ();
 					string time = consts.times[i];
 					
-					var timeRect = new RectangleF (consts.HORIZONTAL_OFFSET, consts.VERTICAL_OFFSET + i * consts.VERTICAL_DIFF, consts.TIME_WIDTH, consts.FONT_SIZE + 4.0f);
+					var timeRect = new CGRect (consts.HORIZONTAL_OFFSET, consts.VERTICAL_OFFSET + i * consts.VERTICAL_DIFF, consts.TIME_WIDTH, consts.FONT_SIZE + 4.0f);
 					
 					// Find noon
 					if (i == 24 / 2) {
-						timeRect = new RectangleF (consts.HORIZONTAL_OFFSET, consts.VERTICAL_OFFSET + i * consts.VERTICAL_DIFF, consts.TIME_WIDTH + consts.PERIOD_WIDTH, consts.FONT_SIZE + 4.0f);
+						timeRect = new CGRect (consts.HORIZONTAL_OFFSET, consts.VERTICAL_OFFSET + i * consts.VERTICAL_DIFF, consts.TIME_WIDTH + consts.PERIOD_WIDTH, consts.FONT_SIZE + 4.0f);
 					}
-					
-					DrawString (time, timeRect, timeFont, UILineBreakMode.WordWrap, UITextAlignment.Right);
+					var s = new NSString (time);
+					s.DrawString (timeRect, timeFont, UILineBreakMode.WordWrap, UITextAlignment.Right);
 					
 					
 					// Draw period
@@ -1608,7 +1626,8 @@ namespace UICalendar
 						periodColor.SetColor ();
 						
 						string period = consts.periods[i];
-						DrawString (period, new RectangleF (consts.HORIZONTAL_OFFSET + consts.TIME_WIDTH, consts.VERTICAL_OFFSET + i * consts.VERTICAL_DIFF, consts.PERIOD_WIDTH, consts.FONT_SIZE + 4.0f), periodFont, UILineBreakMode.WordWrap, UITextAlignment.Center);
+						var s2 = new NSString (period);
+						s2.DrawString (new CGRect (consts.HORIZONTAL_OFFSET + consts.TIME_WIDTH, consts.VERTICAL_OFFSET + i * consts.VERTICAL_DIFF, consts.PERIOD_WIDTH, consts.FONT_SIZE + 4.0f), periodFont, UILineBreakMode.WordWrap, UITextAlignment.Center);
 					}
 				}
 			}
@@ -1635,7 +1654,7 @@ namespace UICalendar
 				Opaque = true;
 				
 				parent = theParent;
-				Frame = new RectangleF (0, 0, TotalWidth, 35);
+				Frame = new CGRect (0, 0, TotalWidth, 35);
 				BackgroundColor = UIColor.White;
 			}
 				/*
@@ -1655,19 +1674,27 @@ namespace UICalendar
 				//this.Draw(this.Frame);
 			}
 
+//			[Export("drawRect")]
+//			private void DrawRect (CGRect rect)
+//			{
+//			}
+//
+//			[Export("drawInContext")]
+//			private void DrawInContext (CALayer layer)
+//			{
+//			}
 			[Export("drawRect")]
-			private void DrawRect (RectangleF rect)
+			private void DrawRect ()
 			{
 			}
 
 			[Export("drawInContext")]
-			private void DrawInContext (CALayer layer)
+			private void DrawInContext ()
 			{
 			}
-
-			public override void Draw (RectangleF rect)
+			public override void Draw (CGRect rect)
 			{
-				Images.calendarTopBar.Draw (new RectangleF (-25, 0, (TotalWidth + 50), 35));
+				Images.calendarTopBar.Draw (new CGRect (-25, 0, (TotalWidth + 50), 35));
 				CGContext context = UIGraphics.GetCurrentContext ();
 				
 				context.SetLineWidth (0.5f);
@@ -1679,27 +1706,29 @@ namespace UICalendar
 					context.StrokePath ();
 					if (i <= 7) {
 						DateTime theDay = parent.FirstDayOfWeek.AddDays (i);
-						DrawDayLabel (new RectangleF (lineWidth, 0, DayWidth, 35), theDay);
+						DrawDayLabel (new CGRect (lineWidth, 0, DayWidth, 35), theDay);
 					}
 				}
 			}
 
 
-			private void DrawDayLabel (RectangleF rect, DateTime date)
+			private void DrawDayLabel (CGRect rect, DateTime date)
 			{
 				// var r = new RectangleF(new PointF(0, 5), new SizeF {Width = CurrentWidth, Height = 35});
 				if (date == DateTime.Today)
 					UIColor.Blue.SetColor ();
 				else
 					UIColor.DarkGray.SetColor ();
-				RectangleF dayRect = rect.SetSize(new SizeF(rect.Width,35));
+				CGRect dayRect = rect.SetSize(new CGSize(rect.Width,35));
 				dayRect.Height = dayRect.Height / 2;
+
+				var s = new NSString (date.DayOfWeek.ToString ());
+				s.DrawString (dayRect, UIFont.BoldSystemFontOfSize (12), UILineBreakMode.WordWrap, UITextAlignment.Center);
 				
-				DrawString (date.DayOfWeek.ToString (), dayRect, UIFont.BoldSystemFontOfSize (12), UILineBreakMode.WordWrap, UITextAlignment.Center);
-				
-				RectangleF dateRect = dayRect;
+				CGRect dateRect = dayRect;
 				dateRect.Y += dayRect.Height;
-				DrawString (date.ToString ("M/d"), dateRect, UIFont.BoldSystemFontOfSize (12), UILineBreakMode.WordWrap, UITextAlignment.Center);
+				var s2 = new NSString (date.ToString ("M/d"));
+				s2.DrawString (dateRect, UIFont.BoldSystemFontOfSize (12), UILineBreakMode.WordWrap, UITextAlignment.Center);
 				UIColor.Black.SetColor ();
 			}
 		}

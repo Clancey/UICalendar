@@ -17,13 +17,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
-using MonoTouch.UIKit;
-using MonoTouch.Foundation;
+using UIKit;
+using Foundation;
 using MonoTouch.Dialog;
-using MonoTouch.CoreLocation;
+using CoreLocation;
 using System.Globalization;
-using MonoTouch.CoreAnimation;
-using MonoTouch.EventKit;
+using CoreAnimation;
+using EventKit;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -74,8 +74,8 @@ namespace UICalendar
 			var calendarArray = store.Calendars;
 			//Util.WriteLine ("Predicate");
 			//Convert to NSDate
-			NSDate nstartDate = Util.DateTimeToNSDate (startDate);
-			NSDate nendDate = Util.DateTimeToNSDate (endDate);
+			NSDate nstartDate = startDate.DateTimeToNSDate();
+			NSDate nendDate = endDate.DateTimeToNSDate();
 			NSPredicate predicate = store.PredicateForEvents (nstartDate, nendDate, calendarArray);
 			
 			//Util.WriteLine ("Fetching Events");
@@ -88,7 +88,7 @@ namespace UICalendar
 			return eventsArray;
 		}
 
-		public static DateTime NSDateToDateTime (MonoTouch.Foundation.NSDate date)
+		public static DateTime NSDateToDateTime (Foundation.NSDate date)
 		{
 			if (date == null)
 				return DateTime.MinValue;
@@ -102,11 +102,11 @@ namespace UICalendar
 			return newDate;
 		}
 
-		public static NSDate DateTimeToNSDate (DateTime date)
-		{
-			var newDate = (NSDate)date;
-			return newDate;
-		}
+//		public static NSDate DateTimeToNSDate (DateTime date)
+//		{
+//			var newDate = (NSDate)date;
+//			return newDate;
+//		}
 		
 		public static DateTime DateTimeMin {
 			get { return DateTime.FromFileTimeUtc (0); }

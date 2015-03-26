@@ -15,10 +15,10 @@
 using System;
 using System.Collections.Generic;
 using MonoTouch.Dialog;
-using MonoTouch.UIKit;
-using MonoTouch.Foundation;
+using UIKit;
+using Foundation;
 using System.Linq;
-using System.Drawing;
+using CoreGraphics;
 namespace UICalendar
 {
 	public static class Settings
@@ -26,7 +26,7 @@ namespace UICalendar
 		
 		private static NSUserDefaults prefs =  NSUserDefaults.StandardUserDefaults ;
 			
-		public static int lastCal
+		public static nint lastCal
 		{
 			get {return prefs.IntForKey("lastCal");}
 			set {prefs.SetInt(value,"lastCal");prefs.Synchronize();}

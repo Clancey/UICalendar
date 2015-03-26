@@ -21,9 +21,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Drawing;
-using MonoTouch.CoreGraphics;
-using MonoTouch.UIKit;
+using CoreGraphics;
+using CoreGraphics;
+using UIKit;
 
 namespace UICalendar
 {
@@ -34,17 +34,17 @@ namespace UICalendar
 		
 		public static UIImage AdjustImage(UIImage template, CGBlendMode mode,float red,float green,float blue,float alpha )
 		{
-			return AdjustImage(new RectangleF(PointF.Empty,template.Size),template,mode,red,green,blue,alpha);
+			return AdjustImage(new CGRect(CGPoint.Empty,template.Size),template,mode,red,green,blue,alpha);
 		}
 		
-		public static UIImage AdjustImage(RectangleF rect,UIImage template, CGBlendMode mode,UIColor color)
+		public static UIImage AdjustImage(CGRect rect,UIImage template, CGBlendMode mode,UIColor color)
 		{
 			if(color == null)
 				return template;
-			float red = new float();
-			float green = new float();
-			float blue = new float();
-			float alpha = new float();
+			nfloat red = new nfloat();
+			nfloat green = new nfloat();
+			nfloat blue = new nfloat();
+			nfloat alpha = new nfloat();
 			if (color == null)
 				color = UIColor.FromRGB(100,0,0);
 			color.GetRGBA(out red,out green, out blue, out alpha);
@@ -53,28 +53,28 @@ namespace UICalendar
 		
 		public static UIImage AdjustImage(UIImage template, CGBlendMode mode,UIColor color)
 		{
-			float red = new float();
-			float green = new float();
-			float blue = new float();
-			float alpha = new float();
+			nfloat red = new nfloat();
+			nfloat green = new nfloat();
+			nfloat blue = new nfloat();
+			nfloat alpha = new nfloat();
 			if (color == null)
 				color = UIColor.FromRGB(100,0,0);
 			color.GetRGBA(out red,out green, out blue, out alpha);
-			return 	AdjustImage(new RectangleF(PointF.Empty,template.Size),template,mode,red,green,blue,alpha);
+			return 	AdjustImage(new CGRect(CGPoint.Empty,template.Size),template,mode,red,green,blue,alpha);
 		}
 		
-		public static UIImage AdjustImage(RectangleF rect,UIImage template, CGBlendMode mode,float red,float green,float blue,float alpha )
+		public static UIImage AdjustImage(CGRect rect,UIImage template, CGBlendMode mode,nfloat red,nfloat green,nfloat blue,nfloat alpha )
 		{
 			using (var cs = CGColorSpace.CreateDeviceRGB ()){
 				using (var context = new CGBitmapContext (IntPtr.Zero, (int)rect.Width, (int)rect.Height, 8, (int)rect.Height*8, cs, CGImageAlphaInfo.PremultipliedLast)){
 					
-					context.SetShadowWithColor(new SizeF(0.0f, 1.0f), 0.7f, UIColor.Black.CGColor);
+					context.SetShadow(new CGSize(0.0f, 1.0f), 0.7f, UIColor.Black.CGColor);
 					context.TranslateCTM(0.0f,0f);
 					//context.ScaleCTM(1.0f,-1.0f);
 					context.DrawImage(rect,template.CGImage);
 					context.SetBlendMode(mode);
 					context.ClipToMask(rect,template.CGImage);
-					context.SetRGBFillColor(red,green,blue,alpha);
+					context.SetFillColor(red,green,blue,alpha);
 					context.FillRect(rect);				
 					
 					return UIImage.FromImage (context.ToImage ());
@@ -92,13 +92,13 @@ namespace UICalendar
 				throw new ArgumentNullException ("image");
 			}
 			
-            UIGraphics.BeginImageContext (new SizeF (48, 48));
+            UIGraphics.BeginImageContext (new CGSize (48, 48));
             var c = UIGraphics.GetCurrentContext ();
 
 			c.AddPath (smallPath);
             c.Clip ();
 
-            image.Draw (new RectangleF (0, 0, 48, 48));
+            image.Draw (new CGRect (0, 0, 48, 48));
             var converted = UIGraphics.GetImageFromCurrentImageContext ();
             UIGraphics.EndImageContext ();
             return converted;
@@ -116,7 +116,7 @@ namespace UICalendar
 				throw new ArgumentNullException ("image");
 			}
 			
-            UIGraphics.BeginImageContext (new SizeF (73, 73));
+            UIGraphics.BeginImageContext (new CGSize (73, 73));
             var c = UIGraphics.GetCurrentContext ();
 
 			c.AddPath (largePath);
@@ -136,11 +136,11 @@ namespace UICalendar
 					height = width;
 				}
 				c.ScaleCTM (1, -1);
-				using (var copy = cg.WithImageInRect (new RectangleF (x, y, width, height))){
-					c.DrawImage (new RectangleF (0, 0, size, -size), copy);
+				using (var copy = cg.WithImageInRect (new CGRect (x, y, width, height))){
+					c.DrawImage (new CGRect (0, 0, size, -size), copy);
 				}
 			} else 
-	            image.Draw (new RectangleF (0, 0, size, size));
+	            image.Draw (new CGRect (0, 0, size, size));
 			
             var converted = UIGraphics.GetImageFromCurrentImageContext ();
             UIGraphics.EndImageContext ();
@@ -162,7 +162,7 @@ namespace UICalendar
 			return path;
 		}
 		
-		public static UIImage newImage(RectangleF rect,UIColor color)
+		public static UIImage newImage(CGRect rect,UIColor color)
 		{
 			using (var cs = CGColorSpace.CreateDeviceRGB ()){
 				using (var context = new CGBitmapContext (IntPtr.Zero, (int)rect.Width, (int)rect.Height, 8, (int)rect.Height*4, cs, CGImageAlphaInfo.PremultipliedLast)){
@@ -185,7 +185,7 @@ namespace UICalendar
 			}
 		}
 		
-		public static UIImage ResizeImage(UIImage theImage,float width, float height, bool keepRatio)
+		public static UIImage ResizeImage(UIImage theImage,nfloat width, nfloat height, bool keepRatio)
 		{
 			if(keepRatio)
 			{
@@ -197,10 +197,10 @@ namespace UICalendar
 			}
 			
 			
-            UIGraphics.BeginImageContext (new SizeF (width,height));
+            UIGraphics.BeginImageContext (new CGSize (width,height));
             var c = UIGraphics.GetCurrentContext ();
 
-            theImage.Draw (new RectangleF (0, 0, width, height));
+            theImage.Draw (new CGRect (0, 0, width, height));
             var converted = UIGraphics.GetImageFromCurrentImageContext ();
             UIGraphics.EndImageContext ();
             return converted;
@@ -217,7 +217,7 @@ namespace UICalendar
 			this.stroke = stroke;
 		}
 		
-		public override void Draw (RectangleF rect)
+		public override void Draw (CGRect rect)
 		{
 			var context = UIGraphics.GetCurrentContext ();
 			var b = Bounds;
